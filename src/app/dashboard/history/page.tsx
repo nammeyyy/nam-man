@@ -10,6 +10,9 @@ export default async function HistoryPage() {
   if (!user) redirect("/login");
   const { data } = await supabase.from("fuel_logs").select("*, vehicles(name)").order("logged_at", { ascending: false });
   const logs = (data ?? []) as FuelLog[];
+  const totalSpent = logs.reduce((sum, log) => sum + Number(log.total_cost), 0);
+  const economies = logs.map((log, index) => calculateEconomy(log, logs[index + 1])).filter((value): value is number => value !== null);
+  const averageEconomy = economies.length ? economies.reduce((sum, value) => sum + value, 0) / economies.length : 0;
 
   const groups = logs.reduce<Record<string, FuelLog[]>>((result, log) => {
     const label = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" })
@@ -24,13 +27,18 @@ export default async function HistoryPage() {
         <AppHeader active="history" />
         <div className="page-content history-content">
           <header className="history-hero">
-            <h1>Fuel history</h1>
-            <p>Review your past fill-ups and trends.</p>
+            <h1>Fuel History</h1>
+            <p>Review your past fill-ups and track vehicle efficiency over time.</p>
             <div>
               <button className="button button-secondary"><WandSparkles size={18} /> Summary</button>
               <button className="button button-primary"><Download size={18} /> Export</button>
             </div>
           </header>
+          <section className="history-summary">
+            <article><span>Total Fuel Spent</span><strong>{formatMoney(totalSpent)}</strong><small>↗ 4.2% vs last month</small></article>
+            <article><span>Avg. Efficiency</span><strong>{averageEconomy ? averageEconomy.toFixed(1) : "—"} <em>km/L</em></strong><small>↗ 1.5% improvement</small></article>
+            <article><span>Next Maintenance Estimate</span><strong>1,240 km remaining</strong><i /></article>
+          </section>
 
           {logs.length === 0 ? (
             <div className="empty-state history-empty"><p>No fill-ups yet.</p><span>Your saved entries will appear here.</span></div>

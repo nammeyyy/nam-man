@@ -30,7 +30,7 @@ export default async function DashboardPage() {
     .filter((log) => log.logged_at.startsWith(currentMonth))
     .reduce((sum, log) => sum + Number(log.total_cost), 0);
   const tankSize = 55;
-  const currentFuel = 33;
+  const currentFuel = 37.4;
   const fuelPercent = Math.round((currentFuel / tankSize) * 100);
 
   return (
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
             <div className="fuel-gauge" style={{ "--fuel": `${fuelPercent * 3.6}deg` } as React.CSSProperties}>
               <div>
                 <strong>{fuelPercent}%</strong>
-                <span>of tank</span>
+                <span>Full</span>
               </div>
             </div>
             <div className="tank-metrics">
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
           <section className="range-card">
             <span>Estimated range</span>
             <strong>320 km</strong>
-            <small>remaining until empty</small>
+            <small>Based on current drive cycle</small>
             <Gauge className="range-art" size={96} />
           </section>
 

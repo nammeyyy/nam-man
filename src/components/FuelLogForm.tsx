@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarDays, CircleDollarSign, Fuel, Gauge, Save, Tag } from "lucide-react";
+import { Fuel, Save } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const fuelTypes = ["Gasohol 95", "Gasohol E20", "Gasohol E85", "Gasohol 91", "Gasohol 95 Premium", "Benzin 95", "Diesel B7", "Diesel B20", "Diesel Premium", "NGV"];
@@ -43,33 +43,8 @@ export function FuelLogForm() {
 
   return (
     <form className="fuel-form" onSubmit={handleSubmit}>
-      <label className="field">
-        <span><CalendarDays size={18} /> Date of fill-up</span>
-        <input type="date" value={date} onChange={(event) => setDate(event.target.value)} required />
-      </label>
-      <label className="field">
-        <span><CircleDollarSign size={18} /> Total cost</span>
-        <div className="input-with-unit"><b>$</b><input inputMode="decimal" placeholder="0.00" value={cost} onChange={(event) => setCost(event.target.value)} required /></div>
-      </label>
-      <label className="field">
-        <span><Fuel size={18} /> Liters</span>
-        <div className="input-with-unit"><input inputMode="decimal" placeholder="0.000" value={liters} onChange={(event) => setLiters(event.target.value)} required /><small>L</small></div>
-      </label>
-      <label className="field">
-        <span><Tag size={18} /> Price per liter</span>
-        <div className="input-with-unit"><b>$</b><input value={pricePerLiter ? pricePerLiter.toFixed(3) : "0.000"} readOnly /><small>/L</small></div>
-      </label>
-      <label className="field">
-        <span><Gauge size={18} /> Odometer reading</span>
-        <div className="input-with-unit"><input inputMode="numeric" placeholder="000,000" value={odometer} onChange={(event) => setOdometer(event.target.value)} required /><small>KM</small></div>
-      </label>
-      <label className="field">
-        <span>Station</span>
-        <input placeholder="Station name (optional)" value={station} onChange={(event) => setStation(event.target.value)} />
-      </label>
-
       <fieldset className="fuel-options">
-        <legend>Fuel type</legend>
+        <legend>Fuel Type</legend>
         <div>
           {fuelTypes.map((type) => (
             <button type="button" key={type} className={fuelType === type ? "selected" : ""} onClick={() => setFuelType(type)}>
@@ -78,11 +53,19 @@ export function FuelLogForm() {
           ))}
         </div>
       </fieldset>
-      <aside className="form-note">Fill your tank completely for the most accurate fuel efficiency calculations.</aside>
+      <div className="form-grid form-grid-wide">
+        <label className="field"><span>Date of Fill-up</span><input type="date" value={date} onChange={(event) => setDate(event.target.value)} required /></label>
+        <label className="field"><span>Odometer Reading (km)</span><div className="input-with-unit"><input inputMode="numeric" placeholder="124,500" value={odometer} onChange={(event) => setOdometer(event.target.value)} required /><small>km</small></div></label>
+      </div>
+      <div className="form-grid">
+        <label className="field"><span>Total Cost</span><div className="input-with-unit"><input inputMode="decimal" placeholder="0.00" value={cost} onChange={(event) => setCost(event.target.value)} required /><small>฿</small></div></label>
+        <label className="field"><span>Amount (Litres)</span><div className="input-with-unit"><input inputMode="decimal" placeholder="0.000" value={liters} onChange={(event) => setLiters(event.target.value)} required /><small>L</small></div></label>
+        <label className="field"><span>Price per Unit</span><div className="input-with-unit"><input value={pricePerLiter ? pricePerLiter.toFixed(2) : "0.00"} readOnly /><small>฿/L</small></div></label>
+      </div>
+      <label className="field station-field"><span>Station (optional)</span><input placeholder="Station name" value={station} onChange={(event) => setStation(event.target.value)} /></label>
+      <aside className="form-note"><Fuel size={20} /><span>Full Tank Fill-up?<small>Recommended for accurate consumption metrics</small></span><i aria-hidden="true" /></aside>
       {status === "error" && <p className="form-error">Couldn’t save this fill-up. Check your database columns and try again.</p>}
-      <button className="button button-primary button-wide save-button" disabled={status === "saving"}>
-        <Save size={18} /> {status === "saving" ? "Saving…" : "Save fill-up"}
-      </button>
+      <div className="form-actions"><button className="button button-primary button-wide save-button" disabled={status === "saving"}><Save size={18} /> {status === "saving" ? "Saving…" : "Save Fill-up"}</button><button type="button" className="button button-secondary">Cancel</button></div>
     </form>
   );
 }
