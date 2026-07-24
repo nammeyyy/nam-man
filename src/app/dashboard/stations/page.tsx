@@ -13,6 +13,10 @@ export default function StationsPage() {
     <main className="app-canvas">
       <section className="mobile-page">
         <AppHeader active="stations" />
+        <header className="stations-hero">
+          <h1>Nearby Stations</h1>
+          <div><button className="button button-secondary">Sort by Price</button><button className="button button-secondary">All Filters</button></div>
+        </header>
         <div className="map-panel">
           <div className="map-grid" />
           {[
@@ -27,17 +31,16 @@ export default function StationsPage() {
           <div className="filter-group">
             <span>Fuel type</span>
             <div className="chip-row">
-              <button className="chip selected">Gasohol 95</button>
-              <button className="chip">Gasohol E20</button>
-              <button className="chip">E85</button>
+              <button className="chip selected">95</button>
+              <button className="chip">91</button>
+              <button className="chip">E20</button>
+              <button className="chip">B7</button>
             </div>
           </div>
           <div className="filter-group">
             <span>Distance</span>
             <div className="chip-row">
-              <button className="chip selected">Under 2 km</button>
-              <button className="chip">Under 5 km</button>
-              <button className="chip">Any</button>
+              <button className="chip selected">Within 10 km</button>
             </div>
           </div>
           <div className="filter-group">
